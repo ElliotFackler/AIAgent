@@ -17,7 +17,7 @@ schema_get_files_info = {
     },
 }
 
-def get_files_info(working_directory: str, directory: str = "."):
+def get_files_info(working_directory: str, directory: str = "."): # Get, label, and return the contents of a direectory
     try: 
         # Compare the permitted directory against the directory the AI agent would like to access
         path = os.path.abspath(working_directory)

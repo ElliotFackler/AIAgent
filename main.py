@@ -1,4 +1,4 @@
-import os, argparse
+import os, argparse, json
 from dotenv import load_dotenv
 from openai import OpenAI
 from prompts import system_prompt
@@ -42,6 +42,9 @@ def main():
         print(f"Prompt tokens: {response.usage.prompt_tokens}")
         print(f"Response tokens: {response.usage.completion_tokens}")
     print(response.choices[0].message.content)
+    print(response.choices[0].message.tool_calls)
+    #print(response.choices[0].message.tool_calls.function.name)
+
 
 
 if __name__ == "__main__":
