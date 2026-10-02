@@ -1,5 +1,7 @@
 import os
 
+#TODO write new write_file schema
+
 def write_file(working_directory: str, file_path: str, content: str) -> str:
 
     # Check that the file exists and is located within the permitted working directory

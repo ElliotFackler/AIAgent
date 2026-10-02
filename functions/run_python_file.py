@@ -1,6 +1,24 @@
 import os
 import subprocess
 
+# TODO: finish schema for run_python_file
+schema_run_python_file = {
+        "type": "function",
+        "function": {
+            "name": "run_python_file",
+            "description": "Find and read through a file and return its contents up to 10,000 characters",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "directory": {
+                        "type": "string",
+                        "description": "file path to location of specified file, relative to the working directory (default is the working directory itself)",
+                },
+            },
+        },
+    },
+}
+
 def run_python_file(working_directory: str, file_path: str, args: list[str] | None = None) -> str:
 
     # Check that the file exists and is located within the permitted working directory

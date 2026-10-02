@@ -1,6 +1,23 @@
 import os
 from config import MAX_CHARS
 
+schema_get_file_content = {
+        "type": "function",
+        "function": {
+            "name": "get_files_content",
+            "description": "Find and read through a file and return its contents up to 10,000 characters",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "directory": {
+                        "type": "string",
+                        "description": "file path to location of specified file, relative to the working directory (default is the working directory itself)",
+                },
+            },
+        },
+    },
+}
+
 def get_file_content(working_directory: str, file_path: str) -> str:
 
     # Check that the file exists and is located within the permitted working directory
