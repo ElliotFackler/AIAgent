@@ -2,7 +2,7 @@ import os, argparse, json
 from dotenv import load_dotenv
 from openai import OpenAI
 from prompts import system_prompt
-from call_functions import available_functions
+from call_functions import available_functions, call_function
 
 load_dotenv()
 
@@ -44,12 +44,18 @@ def main():
 
     message = response.choices[0].message
 
-    # Iterate through and print the functions that the LLM is using
+    # Iterate through and print the functions that LLM is using
     if message.tool_calls != None:
         for tool_call in message.tool_calls:
             function_name = tool_call.function.name
             function_arguments = json.loads(tool_call.function.arguments or "{}")
             print(f"Calling function: {function_name}({function_arguments})")
+            result = call_function(tool_call, args.verbose)
+
+            if result == None:
+                raise Error("No result returned")
+            if args.verbose == True:
+                print(f"-> {result['content']}")
     else:
         print(message.content)
 
