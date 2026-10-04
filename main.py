@@ -1,4 +1,4 @@
-import os, argparse, json
+import os, argparse, json, sys
 import re
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -28,44 +28,51 @@ def main():
         {"role": "user", "content": args.user_prompt},
     ]
 
-    response = client.chat.completions.create(
-        model="openrouter/free",
-        messages=messages,
-        temperature=0,
-        tools=available_functions,
-        tool_choice=(
-            {"type": "function", "function": {"name": "run_python_file"}}
-            if re.match(r"^\s*(?:(?:please|can you)\s+)*(?:run|execute)\b", args.user_prompt, re.IGNORECASE)
-            else "auto"
-        ),
-    )
+    for _ in range(20):
 
-    if response == None:
-        raise RuntimeError("No response received")
+        response = client.chat.completions.create(
+            model="openrouter/free",
+            messages=messages,
+            temperature=0,
+            tools=available_functions,
+            tool_choice=(
+                {"type": "function", "function": {"name": "run_python_file"}}
+                if re.match(r"^\s*(?:(?:please|can you)\s+)*(?:run|execute)\b", args.user_prompt, re.IGNORECASE)
+                else "auto"
+            ),
+        )
 
-    if args.verbose == True:
-        print(f"User prompt: {args.user_prompt}")
-        print(f"Prompt tokens: {response.usage.prompt_tokens}")
-        print(f"Response tokens: {response.usage.completion_tokens}")
+        if response == None:
+            raise RuntimeError("No response received")
 
-    message = response.choices[0].message
+        if args.verbose == True:
+            print(f"User prompt: {args.user_prompt}")
+            print(f"Prompt tokens: {response.usage.prompt_tokens}")
+            print(f"Response tokens: {response.usage.completion_tokens}")
 
-    # Iterate through and print the functions that LLM is using
-    if message.tool_calls != None:
-        for tool_call in message.tool_calls:
-            function_name = tool_call.function.name
-            function_arguments = json.loads(tool_call.function.arguments or "{}")
-            print(f"Calling function: {function_name}({function_arguments})")
-            result = call_function(tool_call, args.verbose)
+        message = response.choices[0].message
+        messages.append(message)
 
-            if result == None:
-                raise Error("No result returned")
-            if args.verbose == True:
-                print(f"-> {result['content']}")
-            else:
-                print(result["content"])
-    else:
-        print(message.content)
+        # Iterate through and print the functions that LLM is using
+        if message.tool_calls != None:
+            for tool_call in message.tool_calls:
+                function_name = tool_call.function.name
+                function_arguments = json.loads(tool_call.function.arguments or "{}")
+                print(f"Calling function: {function_name}({function_arguments})")
+                result = call_function(tool_call, args.verbose)
+
+                messages.append(result)
+
+                if result == None:
+                    raise RuntimeError("No result returned")
+                if args.verbose == True:
+                    print(f"-> {result['content']}")
+                else:
+                    print(result["content"])
+        else:
+            print(message.content)
+    print("Max loops reached")
+    sys.exit()
 
 
 
