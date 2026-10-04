@@ -1,11 +1,12 @@
 import os
 import subprocess
+import sys
 
 schema_run_python_file = {
         "type": "function",
         "function": {
             "name": "run_python_file",
-            "description": "find and run a python file",
+            "description": "Execute a python file and return its output",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -14,10 +15,12 @@ schema_run_python_file = {
                         "description": "file path to location of specified file, relative to the working directory (default is the working directory itself)",
                 },
                     "args": {
-                        "type": "list",
+                        "type": "array",
                         "description": "A list of arguments to be used in the function",
+                        "items": {"type": "string"},
                 },
             },
+            "required": ["file_path"],
         },
     },
 }
@@ -38,21 +41,21 @@ def run_python_file(working_directory: str, file_path: str, args: list[str] | No
         except Exception as e:
             return f"Error: {e}" 
 
-        command = ['python', full_file_path]
+        command = [sys.executable, full_file_path]
 
         if args != None:
              command.extend(args)
 
         completedProcess = subprocess.run(command, cwd=os.path.dirname(full_file_path), capture_output=True, text = True, timeout=30)
 
-        str1 = ''
+        output = ""
         if completedProcess.returncode != 0:
-             str1 = "Process exited with code X"
+            output = f"Process exited with code {completedProcess.returncode}. "
 
-        if completedProcess.stdout == None and completedProcess.stderr == None:
-             str1 += " No output produced"
+        if completedProcess.stdout is None and completedProcess.stderr is None:
+            output += "No output produced"
         else:
-             str1 += f" STDOUT: {completedProcess.stdout}"
-             str1 += f" STDERR: {completedProcess.stdout}"
+            output += f"STDOUT: {completedProcess.stdout}"
+            output += f"STDERR: {completedProcess.stderr}"
 
-        return str1
+        return output

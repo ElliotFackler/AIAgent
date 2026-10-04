@@ -1,4 +1,5 @@
 import os, argparse, json
+import re
 from dotenv import load_dotenv
 from openai import OpenAI
 from prompts import system_prompt
@@ -32,6 +33,11 @@ def main():
         messages=messages,
         temperature=0,
         tools=available_functions,
+        tool_choice=(
+            {"type": "function", "function": {"name": "run_python_file"}}
+            if re.match(r"^\s*(?:(?:please|can you)\s+)*(?:run|execute)\b", args.user_prompt, re.IGNORECASE)
+            else "auto"
+        ),
     )
 
     if response == None:
@@ -56,6 +62,8 @@ def main():
                 raise Error("No result returned")
             if args.verbose == True:
                 print(f"-> {result['content']}")
+            else:
+                print(result["content"])
     else:
         print(message.content)
 
