@@ -1,6 +1,25 @@
 import os
 
-#TODO write new write_file schema
+schema_write_file = {
+        "type": "function",
+        "function": {
+            "name": "write_file",
+            "description": "Find and write to a file",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "file_path": {
+                        "type": "string",
+                        "description": "The path to the file location",
+                },
+                    "content": {
+                            "type": "string",
+                            "description": "The content that should be written into the file",
+                    },
+            },
+        },
+    },
+}
 
 def write_file(working_directory: str, file_path: str, content: str) -> str:
 

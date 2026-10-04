@@ -4,12 +4,12 @@ from config import MAX_CHARS
 schema_get_file_content = {
         "type": "function",
         "function": {
-            "name": "get_files_content",
-            "description": "Find and read through a file and return its contents up to 10,000 characters",
+            "name": "get_file_content",
+            "description": "Find and read through a file's contents and return them up to 10,000 characters",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "directory": {
+                    "file_path": {
                         "type": "string",
                         "description": "file path to location of specified file, relative to the working directory (default is the working directory itself)",
                 },

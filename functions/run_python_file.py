@@ -1,18 +1,21 @@
 import os
 import subprocess
 
-# TODO: finish schema for run_python_file
 schema_run_python_file = {
         "type": "function",
         "function": {
             "name": "run_python_file",
-            "description": "Find and read through a file and return its contents up to 10,000 characters",
+            "description": "find and run a python file",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "directory": {
+                    "file_path": {
                         "type": "string",
                         "description": "file path to location of specified file, relative to the working directory (default is the working directory itself)",
+                },
+                    "args": {
+                        "type": "list",
+                        "description": "A list of arguments to be used in the function",
                 },
             },
         },
