@@ -28,7 +28,7 @@ def main():
         {"role": "user", "content": args.user_prompt},
     ]
 
-    for _ in range(20):
+    for _ in range(2):
 
         response = client.chat.completions.create(
             model="openrouter/free",
@@ -58,7 +58,8 @@ def main():
             for tool_call in message.tool_calls:
                 function_name = tool_call.function.name
                 function_arguments = json.loads(tool_call.function.arguments or "{}")
-                print(f"Calling function: {function_name}({function_arguments})")
+                if args.verbose == True:
+                    print(f"Calling function: {function_name}({function_arguments})")
                 result = call_function(tool_call, args.verbose)
 
                 messages.append(result)
