@@ -5,6 +5,7 @@ from functions.write_file import schema_write_file, write_file
 import json
 from collections.abc import Callable
 
+# Schema for all the different functions available to the LLM
 available_functions = [
     schema_get_files_info,
     schema_get_file_content,
@@ -12,8 +13,7 @@ available_functions = [
     schema_write_file,
 ]
 
-
-
+# Function map for all the different functions available to the LLM
 function_map: dict[str, Callable[..., str]] = {
     "get_file_content": get_file_content,
     "get_files_info": get_files_info,
@@ -31,6 +31,7 @@ def call_function(tool_call, verbose: bool=False) -> dict: # Function for the ag
     else:
         print(f" - Calling function: {function_name}")
 
+    # Check that the function name that the LLM wants to use is in the function map
     if function_name not in function_map:
         return {
             "role": "tool",

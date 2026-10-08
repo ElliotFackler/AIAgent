@@ -57,7 +57,7 @@ def main(): # Main!
         )
 
         # If we don't hear back from the LLM, raise an error
-        if response:
+        if response is None:
             raise RuntimeError("No response received")
 
         # Return token usage if user has verbose enabled
