@@ -12,7 +12,7 @@ load_dotenv()
 api_key = os.environ.get('OPENROUTER_API_KEY')
 
 # Raise error if the key isn't found.
-if api_key == None:
+if api_key is None:
     raise RuntimeError("No API key found")
 
 
@@ -34,6 +34,13 @@ def main(): # Main!
         {"role": "user", "content": args.user_prompt},
     ]
 
+    # If the user wants more details
+    if args.verbose:
+        print(f"User prompt: {args.user_prompt}")
+
+    # If the user uses the words 'run' or 'execute', the LLM must run run_python_file.py
+    force_run = re.match(r"^\s*(?:(?:please|can you)\s+)*(?:run|execute)\b", args.user_prompt, re.IGNORECASE)
+
     # Feedback loop
     for i in range(20):
         # Get a response from the LLM. I set the temperature to 0 because I was having trouble getting the expected result.
@@ -44,18 +51,17 @@ def main(): # Main!
             tools=available_functions,
             tool_choice=(
                 {"type": "function", "function": {"name": "run_python_file"}}
-                if re.match(r"^\s*(?:(?:please|can you)\s+)*(?:run|execute)\b", args.user_prompt, re.IGNORECASE)
+                if i == 0 and force_run
                 else "auto"
             ),
         )
 
         # If we don't hear back from the LLM, raise an error
-        if response == None:
+        if response:
             raise RuntimeError("No response received")
 
-        # If the user wants more details
-        if args.verbose == True:
-            print(f"User prompt: {args.user_prompt}")
+        # Return token usage if user has verbose enabled
+        if args.verbose:
             print(f"Prompt tokens: {response.usage.prompt_tokens}")
             print(f"Response tokens: {response.usage.completion_tokens}")
 
@@ -63,42 +69,41 @@ def main(): # Main!
         message = response.choices[0].message
         messages.append(message)
 
-        #TEMP
-        print(json.dumps(messages, indent=2, default=str))
-
         # Iterate through and print the functions that LLM is using
-        if message.tool_calls != None:
+        if message.tool_calls:
             for tool_call in message.tool_calls:
                 function_name = tool_call.function.name
                 function_arguments = json.loads(tool_call.function.arguments or "{}")
-                if args.verbose == True:
+                if args.verbose:
                     print(f"Calling function: {function_name}({function_arguments})")
+
                 result = call_function(tool_call, args.verbose)
 
+                if result is None:
+                    raise RuntimeError("No result returned")
+                
                 messages.append(result)
 
-                if result == None:
-                    raise RuntimeError("No result returned")
-                if args.verbose == True:
+                if args.verbose:
                     print(f"-> {result['content']}")
                 else:
                     print(result["content"])
         else:
             print(message.content)
+            break
 
         # Every five loops, get input from the user
-        if (i+1) % 6 == 0:
-            note = input('Add guidance, press "Enter" to continue, or press "q" to quit').strip()
+        if (i+1) % 5 == 0:
+            note = input('Add guidance, press "Enter" to continue, or press "q" to quit \n').strip()
             if note.lower() == 'q':
                 break
-            elif note:
+            if note:
                 messages.append({"role": "user", "content": note})
-            else:
-                continue
 
     # If the loop goes on for too long, end the program to avoid burning too many tokens
-    print("Max loops reached")
-    sys.exit()
+    else:
+        print("Max loops reached")
+        sys.exit()
 
 
 

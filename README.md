@@ -19,3 +19,7 @@ Interesting Decisions:
 Dependencies:
 * OpenAI 2.44.0
 * Python dotenv 1.1.0
+
+Challenges & Choices in Production:
+* To avoid the LLM going haywire, I decided to add the possibility for the user to give input during the feedback loop. This way, if the LLM starts going down the wrong track, it can be corrected.
+* The very last issue I dealt with in this project was that sometimes I would get an error code 400 because the API request was malformed. I isolated it to the third index of messages which was the return from call_functions.py. The problem was that the last part of the object wasn't being stringified!. I added str() to it and problem solved
