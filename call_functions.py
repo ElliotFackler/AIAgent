@@ -45,5 +45,5 @@ def call_function(tool_call, verbose: bool=False) -> dict: # Function for the ag
         return {
             "role": "tool",
             "tool_call_id": tool_call.id,
-            "content": result,
+            "content": str(result),
         }

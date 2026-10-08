@@ -35,7 +35,7 @@ def main(): # Main!
     ]
 
     # Feedback loop
-    for _ in range(2):
+    for i in range(20):
         # Get a response from the LLM. I set the temperature to 0 because I was having trouble getting the expected result.
         response = client.chat.completions.create(
             model="openrouter/free",
@@ -63,6 +63,9 @@ def main(): # Main!
         message = response.choices[0].message
         messages.append(message)
 
+        #TEMP
+        print(json.dumps(messages, indent=2, default=str))
+
         # Iterate through and print the functions that LLM is using
         if message.tool_calls != None:
             for tool_call in message.tool_calls:
@@ -82,6 +85,17 @@ def main(): # Main!
                     print(result["content"])
         else:
             print(message.content)
+
+        # Every five loops, get input from the user
+        if (i+1) % 6 == 0:
+            note = input('Add guidance, press "Enter" to continue, or press "q" to quit').strip()
+            if note.lower() == 'q':
+                break
+            elif note:
+                messages.append({"role": "user", "content": note})
+            else:
+                continue
+
     # If the loop goes on for too long, end the program to avoid burning too many tokens
     print("Max loops reached")
     sys.exit()
