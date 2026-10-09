@@ -29,6 +29,9 @@ def main(): # Main!
     parser.add_argument("--dir", default=".", help="The directory that the LLM may work in")
     args = parser.parse_args()
 
+    if not os.path.isdir(args.dir):
+        raise SystemExit("{args.dir} is not a valid directory")
+
     # Set the working directory so the agent can't change it later
     working_directory = os.path.abspath(args.dir)
 
