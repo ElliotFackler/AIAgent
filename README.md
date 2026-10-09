@@ -1,5 +1,5 @@
 ## AI Agent
-This is an AI Agent with a feedback loop that can run and write files
+This is a Python CLI AI coding agent that uses OpenRouter LLMs to read, run, and write files within a user-chosen directory.
 
 ## Purpose:
 * This is an AI Agent that can work within a directory specified by the user. It can read and write files and answer questions. It is a code writing assistant.
