@@ -21,7 +21,7 @@ schema_write_file = {
     },
 }
 
-def write_file(working_directory: str, file_path: str, content: str) -> str:
+def write_file(working_directory: str, file_path: str, content: str) -> str: # Locate a file and run it
 
     # Check that the file exists and is located within the permitted working directory
         try:

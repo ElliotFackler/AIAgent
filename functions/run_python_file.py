@@ -25,7 +25,7 @@ schema_run_python_file = {
     },
 }
 
-def run_python_file(working_directory: str, file_path: str, args: list[str] | None = None) -> str:
+def run_python_file(working_directory: str, file_path: str, args: list[str] | None = None) -> str: # Locate a python file and run it
 
     # Check that the file exists and is located within the permitted working directory
         try:
@@ -48,6 +48,7 @@ def run_python_file(working_directory: str, file_path: str, args: list[str] | No
 
         completedProcess = subprocess.run(command, cwd=os.path.dirname(full_file_path), capture_output=True, text = True, timeout=30)
 
+        # Check if the file has returned a value or not
         output = ""
         if completedProcess.returncode != 0:
             output = f"Process exited with code {completedProcess.returncode}. "

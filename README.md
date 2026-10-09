@@ -13,13 +13,10 @@ Setup:
 Tech
 * OpenRouter: This AI Agent utilizes OpenRouter to find the best available free-use LLM. Be aware that free levels have low token limits. Using "--verbose" on your cmd will show the tokens used in the request.
 
-Interesting Decisions:
-* I currently include a line in the main.py file that forces the agent to use "run_python_file" when the user uses the either the word "run" or "execute". I was having trouble getting the agent to use this file as it preferred using "get_file_info" when I would use prompts like "uv run main .py 'run the main.py' file".
-
 Dependencies:
 * OpenAI 2.44.0
 * Python dotenv 1.1.0
 
 Challenges & Choices in Production:
-* To avoid the LLM going haywire, I decided to add the possibility for the user to give input during the feedback loop. This way, if the LLM starts going down the wrong track, it can be corrected.
+* I currently include a line in the main.py file that forces the agent to use "run_python_file" when the user uses the either the word "run" or "execute". I was having trouble getting the agent to use this file as it preferred using "get_file_info" when I would use prompts like "uv run main .py 'run the main.py' file".
 * The very last issue I dealt with in this project was that sometimes I would get an error code 400 because the API request was malformed. I isolated it to the third index of messages which was the return from call_functions.py. The problem was that the last part of the object wasn't being stringified!. I added str() to it and problem solved
