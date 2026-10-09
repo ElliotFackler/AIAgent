@@ -6,7 +6,7 @@ schema_run_python_file = {
         "type": "function",
         "function": {
             "name": "run_python_file",
-            "description": "Execute a python file and return its output",
+            "description": "Execute a python file and return its output. Use this when the user wants to run or execute a file",
             "parameters": {
                 "type": "object",
                 "properties": {

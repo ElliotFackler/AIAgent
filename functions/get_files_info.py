@@ -4,7 +4,7 @@ schema_get_files_info = {
         "type": "function",
         "function": {
             "name": "get_files_info",
-            "description": "Lists files in a specified directory relative to the working directory, providing file size and directory status",
+            "description": "Lists files in a specified directory relative to the working directory, providing file size and directory status. This does not read the file's content or run/execute a file",
             "parameters": {
                 "type": "object",
                 "properties": {

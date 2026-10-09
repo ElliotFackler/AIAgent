@@ -38,9 +38,6 @@ def main(): # Main!
     if args.verbose:
         print(f"User prompt: {args.user_prompt}")
 
-    # If the user uses the words 'run' or 'execute', the LLM must run run_python_file.py
-    force_run = re.match(r"^\s*(?:(?:please|can you)\s+)*(?:run|execute)\b", args.user_prompt, re.IGNORECASE)
-
     # Feedback loop
     for i in range(20):
         # Get a response from the LLM. I set the temperature to 0 because I was having trouble getting the expected result.
@@ -49,14 +46,9 @@ def main(): # Main!
             messages=messages,
             temperature=0,
             tools=available_functions,
-            tool_choice=(
-                {"type": "function", "function": {"name": "run_python_file"}}
-                if i == 0 and force_run
-                else "auto"
-            ),
+            tool_choice="auto"
         )
 
-        # If we don't hear back from the LLM, raise an error
         if response is None:
             raise RuntimeError("No response received")
 
