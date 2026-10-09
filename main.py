@@ -15,9 +15,6 @@ api_key = os.environ.get('OPENROUTER_API_KEY')
 if api_key is None:
     raise RuntimeError("No API key found")
 
-
-
-
 def main(): # Main!
     # Client for connection
     client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key,)
