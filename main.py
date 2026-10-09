@@ -26,7 +26,11 @@ def main(): # Main!
     parser = argparse.ArgumentParser(description="chatbot")
     parser.add_argument("user_prompt", type=str, help="User prompt")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+    parser.add_argument("--dir", default=".", help="The directory that the LLM may work in")
     args = parser.parse_args()
+
+    # Set the working directory so the agent can't change it later
+    working_directory = os.path.abspath(args.dir)
 
     # Combine the system prompt and the user prompt to be sent to the LLM
     messages = [
@@ -61,7 +65,7 @@ def main(): # Main!
         message = response.choices[0].message
         messages.append(message)
 
-        # Iterate through and print the functions that LLM is using
+        # Iterate through and print the functions that the agent is using
         if message.tool_calls:
             for tool_call in message.tool_calls:
                 function_name = tool_call.function.name
@@ -69,7 +73,7 @@ def main(): # Main!
                 if args.verbose:
                     print(f"Calling function: {function_name}({function_arguments})")
 
-                result = call_function(tool_call, args.verbose)
+                result = call_function(tool_call, args.dir, args.verbose)
 
                 if result is None:
                     raise RuntimeError("No result returned")

@@ -5,7 +5,9 @@ This is an AI Agent with a feedback loop that can run and write files
 * This is an AI Agent that can work within a directory specified by the user. It can read and write files and answer questions. It is a code writing assistant.
 
 ## How To Use:
-* You can run this tool using the following command "uv run main.py" followed by your question. You can add the flag "--verbose" for an in-depth answer and stats.
+* You can run this tool using the following command "uv run main.py" followed by your question. You can add the flag "--verbose" for an in-depth answer and stats. You can add "--dir" to decide the working directory of the agent. If no directory is specified, it defaults to your open directory in the CLI.
+* Example 1: "uv run main.py 'what is 2 + 2' --verbose --dir ./calculator"
+* Example 2: "uv run main.py 'what is 3 * 3'"
 
 ## Setup:
 * Clone the repo
